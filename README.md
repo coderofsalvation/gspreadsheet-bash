@@ -38,3 +38,7 @@ The awk oneliner converts the usual spacedelimited unix output to tsv (tabsepera
 # Todos
 
 * import append instead of delete+upload.
+
+# Requirements
+
+* any linux distro (bash+curl+gawk)
