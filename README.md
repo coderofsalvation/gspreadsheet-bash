@@ -1,7 +1,7 @@
 gspreadsheet-bash
 =================
 
-google spreadsheet bash client which lets you combine your unix-fu with spreadsheets. Piping/replacing spreadsheet from the console for lazy developers :)
+portable google spreadsheet bash client which lets you combine your unix-fu with spreadsheets. Piping/replacing spreadsheet from the console for lazy developers :)
 
 # Usage 
        
