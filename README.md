@@ -34,6 +34,12 @@ Now you can go crazy with cron and load data in your application.
     $ export pass="owerwer"
     $ gspreadsheet export "My spreadsheet" 123 | sed 's/flip/flop/g' | gspreadsheet import "My spreadsheet" 123
 
+# Example: Mysql-table to spreadsheet
+
+    $ export user="my@email.com"
+    $ export pass="owerwer"
+    $ echo "select * from users" | mysql -uusername -ppassword db_name | gspreadsheet import 'My spreadsheet' 123
+
 # Example: Import Console-fu
 
     $ export user="my@email.com"
