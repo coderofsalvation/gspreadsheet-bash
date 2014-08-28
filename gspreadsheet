@@ -40,9 +40,20 @@ tsvtocsv(){
   cat - | awk -F '\t' '{ for(i = 1; i <= NF; i++) { gsub(/"/,"\"\"\"",$i); printf "\"%s\"",$i; if( i < NF ) printf "," }; printf "\n" }'
 }
 
+tsvtoatom(){
+  atom='<entry xmlns="http://www.w3.org/2005/Atom" xmlns:gsx="http://schemas.google.com/spreadsheets/2006/extended">%s</entry>'
+  elements="$(cat - | awk -F '\t' '{ for(i = 1; i <= NF; i++) { printf "<gsx:%i>%s</gsx>\n",i,$i } }')";
+  printf "$atom" "$elements"
+}
+
 import(){
   token="$(gettoken "$user" "$pass" "writely" | grep Auth | cut -d\= -f2)"
   cat - | tsvtocsv | curl -L --silent --request PUT --header "Authorization: GoogleLogin auth=$token" --header "Slug: $spreadsheetname" --header "If-Match: *" --header "Content-Type: text/csv" --data-binary @- "https://docs.google.com/feeds/default/media/spreadsheet%3A$1?v=3#gid=$2"
+}
+
+add(){
+  token="$(gettoken "$user" "$pass" "writely" | grep Auth | cut -d\= -f2)"
+  cat - | tsvtoatom | curl -L --silent --request POST --header "Authorization: GoogleLogin auth=$token" --header "Slug: $spreadsheetname" --header "Content-Type: application/atom+xml" --data-binary @- "https://docs.google.com/feeds/documents/private/full?title=flowshake.demosheet&title-exact=true&gid=$2"
 }
 
 getid(){
