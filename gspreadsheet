@@ -14,8 +14,8 @@
 
 spreadsheetname="$2"
 sheet="$3"
-token="flop"
-[[ -n "$5" ]] && type="$5" || type="tsv"
+token="(no token)"
+[[ -n "$4" ]] && type="$4" || type="tsv"
 
 # gets the authentication token from google
 gettoken(){
@@ -28,7 +28,7 @@ prettyxml(){
 
 export(){
   token="$(gettoken "$user" "$pass" "wise")"
-  curl -L --silent --header "Authorization: GoogleLogin auth=$token" "http://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=$1&exportFormat=$3&gid=$2"
+  curl -L --silent --header "Authorization: GoogleLogin auth=$token" "http://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=$1&exportFormat=$type&gid=$2"
   echo ""
 }
 

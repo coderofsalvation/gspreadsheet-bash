@@ -12,12 +12,21 @@ portable google spreadsheet bash client which lets you combine your unix-fu with
 The sheetgid can be found in the googlespreadsheet browserurl.
 These urls end with '#gid=123' (so 123 is the sheetgid).
 
-# Example
+# Example: Spreadsheet to console
   
     user=my@email.com pass=googlepasswd gspreadsheet export 'My spreadsheet' 12323
     foo4   bar4
     foo1   bar1
     foo2   bar3
+
+Now you can go crazy with sed, awk and your shell-fu!
+
+# Example: Spreadsheet to .XXX
+  
+    user=my@email.com pass=googlepasswd gspreadsheet export 'My spreadsheet' 12323 pdf > report.pdf
+    user=my@email.com pass=googlepasswd gspreadsheet export 'My spreadsheet' 12323 csv > report.csv
+
+Now you can go crazy with cron and load data in your application.
 
 # Example: Search/Replace 
 
@@ -25,7 +34,7 @@ These urls end with '#gid=123' (so 123 is the sheetgid).
     $ export pass="owerwer"
     $ gspreadsheet export "My spreadsheet" 123 | sed 's/flip/flop/g' | gspreadsheet import "My spreadsheet" 123
 
-# Example: console fu
+# Example: Import Console-fu
 
     $ export user="my@email.com"
     $ export pass="owerwer"
