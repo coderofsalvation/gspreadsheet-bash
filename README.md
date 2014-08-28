@@ -46,7 +46,9 @@ The awk oneliner converts the usual spacedelimited unix output to tsv (tabsepera
 
 # Todos
 
-* import append instead of delete+upload.
+* add row function (import fully overwrites sheet)
+
+Strangely enough the gspreadsheet api v3 does not simply allow adding rows without knowing the columnnames. Quite a pity, because it makes thing much more complex to implement.
 
 # Requirements
 
