@@ -5,10 +5,12 @@
   echo "       "
   echo "  gspreadsheet <export|import> <spreadsheetname> <sheetgid> <type>"
   echo ""
-  echo "  exporttypes: are 'xls' 'csv' 'pdf' 'ods' 'tsv' 'ods' or 'html'"
+  echo "  type can be 'xls' 'csv' 'pdf' 'ods' 'tsv' 'ods' or 'html'"
   echo ""
   echo "Example:"
   echo "  user=my@email.com pass=googlepasswd gspreadsheet export 'My spreadsheet' 12323";
+  echo "  echo \"foo\\tflop\" | user=my@email.com pass=googlepasswd gspreadsheet import 'My spreadsheet' 12323"
+  echo "  echo '\"foo\",\"bar\"' | user=my@email.com pass=googlepasswd gspreadsheet import 'My spreadsheet' 12323 csv"
   exit 0
 }
 
@@ -33,21 +35,26 @@ export(){
 }
 
 list(){
-  curl -L --silent --header "Authorization: GoogleLogin auth=$1" "https://docs.google.com/feeds/documents/private/full?title=flowshake.demosheet&title-exact=true" 2>&1 | prettyxml
+  curl -L --silent --header "Authorization: GoogleLogin auth=$1" "https://docs.google.com/feeds/documents/private/full?title=$2&title-exact=true" 2>&1 | prettyxml
 }
 
 tsvtocsv(){
   cat - | awk -F '\t' '{ for(i = 1; i <= NF; i++) { gsub(/"/,"\"\"\"",$i); printf "\"%s\"",$i; if( i < NF ) printf "," }; printf "\n" }'
 }
 
+csvtotsv(){
+  cat - | awk '{$1=$1;gsub(/"/,"")}1' FPAT='([^,]+)|(\"[^\"]+\")' OFS='\t'
+}
+
 import(){
   token="$(gettoken "$user" "$pass" "writely" | grep Auth | cut -d\= -f2)"
-  cat - | tsvtocsv | curl -L --silent --request PUT --header "Authorization: GoogleLogin auth=$token" --header "Slug: $spreadsheetname" --header "If-Match: *" --header "Content-Type: text/csv" --data-binary @- "https://docs.google.com/feeds/default/media/spreadsheet%3A$1?v=3#gid=$2"
+  [[ "$type" == "csv" ]] && data="$(cat -)" || data="$(cat - | tsvtocsv )"
+  echo "$data" | curl -L --silent --request PUT --header "Authorization: GoogleLogin auth=$token" --header "Slug: $spreadsheetname" --header "If-Match: *" --header "Content-Type: text/csv" --data-binary @- "https://docs.google.com/feeds/default/media/spreadsheet%3A$1?v=3#gid=$2"
 }
 
 getid(){
   token="$(gettoken "$user" "$pass" "writely" | grep Auth | cut -d\= -f2)"
-  config="$(list "$token")"
+  config="$(list "$token" "$1")"
   echo "$config" | grep "<gd:resourceId>spreadsheet:" | sed 's/.*spreadsheet://g'
 }
 

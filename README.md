@@ -7,7 +7,12 @@ portable google spreadsheet bash client which lets you combine your unix-fu with
        
     gspreadsheet <export|import> <spreadsheetname> <sheetgid> <type>
 
-    exporttypes: are 'xls' 'csv' 'pdf' 'ods' 'tsv' 'ods' or 'html'
+    types: are 'xls' 'csv' 'pdf' 'ods' 'tsv' 'ods' or 'html'
+
+    $ user=my@email.com pass=googlepasswd gspreadsheet export 'My spreadsheet' 12323
+    $ echo "foo\tflop" | user=my@email.com pass=googlepasswd gspreadsheet import 'My spreadsheet' 12323
+    $ echo '"foo","bar"' | user=my@email.com pass=googlepasswd gspreadsheet import 'My spreadsheet' 12323 csv
+
 
 The sheetgid can be found in the googlespreadsheet browserurl.
 These urls end with '#gid=123' (so 123 is the sheetgid).
