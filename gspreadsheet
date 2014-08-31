@@ -7,10 +7,13 @@
   echo ""
   echo "  type can be 'xls' 'csv' 'pdf' 'ods' 'tsv' 'ods' or 'html'"
   echo ""
+  echo "import takes tabseperated (tsv) as input, not spaceseparated (ssv)"
+  echo ""
   echo "Example:"
   echo "  user=my@email.com pass=googlepasswd gspreadsheet export 'My spreadsheet' 12323";
   echo "  echo \"foo\\tflop\" | user=my@email.com pass=googlepasswd gspreadsheet import 'My spreadsheet' 12323"
   echo "  echo '\"foo\",\"bar\"' | user=my@email.com pass=googlepasswd gspreadsheet import 'My spreadsheet' 12323 csv"
+  echo "  ls -al | gspreadsheet ssvtotsv | user=my@email.com pass=googlepasswd gspreadsheet import 'My spreadsheet' 12323 csv"
   exit 0
 }
 
@@ -46,6 +49,10 @@ csvtotsv(){
   cat - | awk '{$1=$1;gsub(/"/,"")}1' FPAT='([^,]+)|(\"[^\"]+\")' OFS='\t'
 }
 
+ssvtotsv(){
+  cat - | awk '{ for(i = 1; i <= NF; i++) { printf "%s",$i; if( i < NF ) printf "\t" }; printf "\n" }'
+}
+
 import(){
   token="$(gettoken "$user" "$pass" "writely" | grep Auth | cut -d\= -f2)"
   [[ "$type" == "csv" ]] && data="$(cat -)" || data="$(cat - | tsvtocsv )"
@@ -58,4 +65,9 @@ getid(){
   echo "$config" | grep "<gd:resourceId>spreadsheet:" | sed 's/.*spreadsheet://g'
 }
 
-$1 "$(getid "$spreadsheetname")" "$sheet" "$type"
+case "$1" in 
+  *to*) "$@"
+        ;;
+  *)    $1 "$(getid "$spreadsheetname")" "$sheet" "$type"
+        ;;
+esac     

@@ -12,10 +12,11 @@ portable google spreadsheet bash client which lets you combine your unix-fu with
     $ user=my@email.com pass=googlepasswd gspreadsheet export 'My spreadsheet' 12323
     $ echo "foo\tflop" | user=my@email.com pass=googlepasswd gspreadsheet import 'My spreadsheet' 12323
     $ echo '"foo","bar"' | user=my@email.com pass=googlepasswd gspreadsheet import 'My spreadsheet' 12323 csv
-
+    $ ls -al | gspreadsheet ssvtotsv | user=my@email.com pass=googlepasswd gspreadsheet import 'My spreadsheet' 12323 csv
 
 The sheetgid can be found in the googlespreadsheet browserurl.
 These urls end with '#gid=123' (so 123 is the sheetgid).
+Import takes tabseperated (tsv) as input, not spaceseparated (ssv).
 
 # Example: Spreadsheet to console
   
@@ -49,9 +50,9 @@ Now you can go crazy with cron and load data in your application.
 
     $ export user="my@email.com"
     $ export pass="owerwer"
-    $ ls -la | awk '{ for(i = 1; i <= NF; i++) { printf "%s",$i; if( i < NF ) printf "\t" }; printf "\n" }' | gspreadsheet import "My spreadsheet" 123
+    $ ls -la | gspreadsheet ssvtotsv | gspreadsheet import "My spreadsheet" 123
 
-The awk oneliner converts the usual spacedelimited unix output to tsv (tabseperated fields, the format which our gspreadsheet utility likes).
+Import takes tabseperated (tsv) as input, not spaceseparated (ssv).
 
   <img alt="" src=".res/example.png"/>
 
